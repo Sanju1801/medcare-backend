@@ -1,5 +1,6 @@
 import pool from "../db/index.js";
 
+// ******************************************** book an appointmemnt ***********************************//
 export const bookAppointment = async (body) => {
     try {
         console.log('booking service', body)
@@ -29,6 +30,8 @@ export const bookAppointment = async (body) => {
     }
 };
 
+
+// ******************************************** get all appointmemnts ***********************************//
 export const getAppointments = async () => {
     try {
         console.log('appointment get api')
@@ -54,8 +57,7 @@ export const getAppointments = async () => {
     }
 }
 
-
-
+// ******************************************** update an appointmemnt ***********************************//
 export const updateAppointments = async ({id, status}) => {
     try {
         if (!id) {

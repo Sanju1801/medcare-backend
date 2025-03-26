@@ -9,7 +9,7 @@ import pkg from 'passport-google-oauth20'
 const GoogleStratergy = pkg.Strategy;
 
 
-//******************** google sign up  ****************************/
+//*********************************** google sign up  **************************************/
 
 passport.use(new GoogleStratergy({
     clientID: config.googleClientID,
@@ -22,10 +22,10 @@ passport.use(new GoogleStratergy({
     }
 ))
 
-//******************** login  ****************************/
+//************************************ login  *********************************************/
 
 
-// Local Strategy for authenticating users with email and password
+// ********************* Local Strategy for authenticating users with email and password **********************//
 passport.use(
   new LocalStrategy(
     { usernameField: "email" },
@@ -61,7 +61,7 @@ passport.use(
 );
 
 
-// JWT Strategy for protecting routes
+// ********************* JWT Strategy for protecting routes *******************************************//
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: config.jwtSecret

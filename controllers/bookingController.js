@@ -3,8 +3,7 @@ import { bookAppointment, getAppointments, updateAppointments } from '../service
 
 const router = express.Router()
 
-
-// add an appointmemnt
+// ******************************************** add an appointmemnt ***********************************//
 router.post('/book', async (req, res) => {
     console.log('booking controller')
     try {
@@ -21,6 +20,7 @@ router.post('/book', async (req, res) => {
     }
 });
 
+// ******************************************** get all appointmemnts ***********************************//
 router.get('/', async (req, res) => {
     try {
         console.log('appointment get controller')
@@ -38,6 +38,7 @@ router.get('/', async (req, res) => {
     }
 })
 
+// ******************************************** update an appointmemnt ***********************************//
 router.put('/update', async (req, res) => {
     try {
         const { id , status } = req.body; 

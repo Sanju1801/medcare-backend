@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import pool from "../db/index.js";
 import config from "../config/index.js";
 
+
 const saveUser = async (body) => {
     try {
         console.log(body);

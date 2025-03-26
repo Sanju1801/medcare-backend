@@ -1,10 +1,10 @@
 import express from 'express'
-import { addDoctor, getAllDoctors, deleteDoctor } from '../services/doctorService.js'
+import { addDoctor, getAllDoctors, deleteDoctor, filterDoctors } from '../services/doctorService.js'
 
 const router = express.Router()
 
 
-// add a doctor
+// ******************************************** add a doctor ***********************************//
 router.post('/add', async (req, res) => {
     try {
         const response = await addDoctor(req.body);
@@ -20,7 +20,8 @@ router.post('/add', async (req, res) => {
     }
 });
 
-// get a list of all doctors
+
+// ********************************************  get a list of all doctors ***********************************//
 router.get('/', async (req, res) => {
     try {
         console.log('doctor get controller')
@@ -38,6 +39,8 @@ router.get('/', async (req, res) => {
     }
 })
 
+
+// ********************************************  delete a doctor ***********************************//
 router.delete('/delete/:id', async (req, res) => {
     try {
         let { id } = req.params;
@@ -58,29 +61,23 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
+
+// ********************************************  get a list of filtered doctors with pagination ***********************************//
 router.get("/filter", async (req, res) => {
     try {
-        console.log("hit");
+        const filters = req.query;
+        const response = await filterDoctors(filters);
 
-        const  filters  = req.query;
-        const page = parseInt(req.query.page) || 1;
-        // console.log(filters);
-        if (!filters) {
-            return res.status(400).json({ message: "At least one search filter is required" });
-        }
-
-        const response = await filterDoctors(filters, page);
-        // console.log("Controller ", response);
-
-        if (response) {
-            return res.status(200).json(response);
+        if (response.success) {
+            return res.status(200).json(response.doctors);
         } else {
-            return res.status(500).json({ message: response.error });
+            return res.status(500).json({ error: response.error });
         }
-    } catch (error) {
-        console.error("Error in doctor list API:", error);
-        return res.status(500).json({ message: "Server error" });
+    } catch (err) {
+        console.error("Error in doctor filter API:", err);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 export default router;

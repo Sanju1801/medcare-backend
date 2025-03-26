@@ -3,7 +3,7 @@ import passport from '../services/passportService.js'
 import jwt from "jsonwebtoken";
 import config from '../config/index.js';
 
-const router = express.Router()
+const router = express.Router();
 
 
 //********************Google sign up ****************************/

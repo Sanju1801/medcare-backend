@@ -8,19 +8,26 @@ const saveUser = async (body) => {
         console.log(body);
         const { name, email, password } = body
         if (!name || !email || !password) {
-            throw new Error("missing payload values")
+            throw new Error("missing required fields")
+        }
+
+        if (!email.endsWith('@gmail.com') && !email.endsWith('@tothenew.com')) {
+            throw new Error("this email is not allowed");
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const role = 'users';
-
-        const result = await pool.query('INSERT INTO users (name, email, password, role) values ($1,$2,$3, $4)', [name, email, hashedPassword, role]);
+        // const role = 'users';
+    
+        const result = await pool.query('INSERT INTO users (name, email, password) values ($1,$2,$3) RETURNING *', [name, email, hashedPassword]);
         console.log('save query response', result);
 
         if (result.rows) {
             const user = result.rows[0];
+            console.log(user);
+
             const token = jwt.sign(
-                { name: user.name, email: user.email, role: user.role },
+                // { name: user.name, email: user.email, role: user.role },
+                {name: user.name},
                 config.jwtSecret,
                 { expiresIn: "1h" }
             );

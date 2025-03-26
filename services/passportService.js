@@ -64,7 +64,7 @@ passport.use(
 // JWT Strategy for protecting routes
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secret: config.jwtSecret // secretOrKey
+  secretOrKey: config.jwtSecret
 };
 
 passport.use(

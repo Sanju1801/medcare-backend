@@ -96,29 +96,34 @@ export const filterDoctors = async ({ rating, experience, gender, searchQuery = 
 
         if (experience && experience !== "all") {
             switch (experience) {
-                case "15+":
-                    query += ` AND experience >= $${queryParams.length + 1}`;
+                case "16":
                     queryParams.push(15);
+                    query += ` AND experience > $${queryParams.length}`;
                     break;
                 case "10-15":
-                    query += ` AND experience BETWEEN $${queryParams.length + 1} AND $${queryParams.length + 2}`;
-                    queryParams.push(10, 15);
+                    queryParams.push(10);
+                    queryParams.push(15);
+                    query += ` AND experience BETWEEN $${queryParams.length - 1} AND $${queryParams.length}`;
                     break;
                 case "5-10":
-                    query += ` AND experience BETWEEN $${queryParams.length + 1} AND $${queryParams.length + 2}`;
-                    queryParams.push(5, 10);
+                    queryParams.push(5);
+                    queryParams.push(10);
+                    query += ` AND experience BETWEEN $${queryParams.length - 1} AND $${queryParams.length}`;
                     break;
                 case "3-5":
-                    query += ` AND experience BETWEEN $${queryParams.length + 1} AND $${queryParams.length + 2}`;
-                    queryParams.push(3, 5);
+                    queryParams.push(3);
+                    queryParams.push(5);
+                    query += ` AND experience BETWEEN $${queryParams.length - 1} AND $${queryParams.length}`;
                     break;
                 case "1-3":
-                    query += ` AND experience BETWEEN $${queryParams.length + 1} AND $${queryParams.length + 2}`;
-                    queryParams.push(1, 3);
+                    queryParams.push(1);
+                    queryParams.push(3);
+                    query += ` AND experience BETWEEN $${queryParams.length - 1} AND $${queryParams.length}`;
                     break;
                 case "0-1":
-                    query += ` AND experience BETWEEN $${queryParams.length + 1} AND $${queryParams.length + 2}`;
-                    queryParams.push(0, 1);
+                    queryParams.push(0);
+                    queryParams.push(1);
+                    query += ` AND experience BETWEEN $${queryParams.length - 1} AND $${queryParams.length}`;
                     break;
                 default:
                     break;
@@ -132,7 +137,7 @@ export const filterDoctors = async ({ rating, experience, gender, searchQuery = 
 
         if (searchQuery) {
             queryParams.push(`%${searchQuery.toLowerCase()}%`);
-            query += ` AND (LOWER(doctor_name) LIKE $${queryParams.length} 
+            query += ` AND (LOWER(doctor_name) LIKE $${queryParams.length}
                        OR LOWER(expertise) LIKE $${queryParams.length} 
                        OR LOWER(disease_name) LIKE $${queryParams.length})`;
         }
@@ -140,9 +145,12 @@ export const filterDoctors = async ({ rating, experience, gender, searchQuery = 
         // Pagination logic
         const perPage = 6;
         const offset = (page - 1) * perPage;
-        queryParams.push(perPage, offset);
+        queryParams.push(perPage);
+        queryParams.push(offset);
         query += ` LIMIT $${queryParams.length - 1} OFFSET $${queryParams.length}`;
 
+        console.log("Executing Query:", query, queryParams);
+        
         const result = await pool.query(query, queryParams);
         return { success: true, doctors: result.rows };
     }

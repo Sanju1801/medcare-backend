@@ -11,7 +11,7 @@ const server = http.createServer(app);
 
 app.use(
   cors({
-    origin: "http://localhost:3001", // Allow requests from any origin
+    origin: "http://localhost:3000", // Allow requests from any origin
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type"],
   })

@@ -31,8 +31,6 @@ router.get(
 
 //******************** login  ****************************/
    
-// JWT Secret Key (use env variable in production)
-
 router.post("/login", (req, res, next) => {
   console.log("POST /login hit");
 

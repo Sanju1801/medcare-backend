@@ -66,6 +66,7 @@ router.delete('/delete/:id', async (req, res) => {
 router.get("/filter", async (req, res) => {
     try {
         const filters = req.query;
+        console.log(filters);
         const response = await filterDoctors(filters);
 
         if (response.success) {

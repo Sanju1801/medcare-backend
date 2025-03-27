@@ -1,9 +1,8 @@
 import express from 'express'
-import { addDoctor, getAllDoctors, deleteDoctor, filterDoctors, getOneDoctor } from '../services/doctorService.js'
+import { addDoctor, getAllDoctors, deleteDoctor, getAppointments, updateAppointments } from '../services/adminService.js'
 // import jwtAuthMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router()
-
 
 // ******************************************** add a doctor ***********************************//
 router.post('/add', async (req, res) => {
@@ -63,37 +62,15 @@ router.delete('/delete/:id', async (req, res) => {
 });
 
 
-// ********************************************  get a list of filtered doctors with pagination ***********************************//
-// router.get("/filter", jwtAuthMiddleware, async (req, res) => {
+// ******************************************** booking ***********************************//
 
-router.get("/filter", async (req, res) => {
+
+
+// ******************************************** get all appointmemnts ***********************************//
+router.get('/', async (req, res) => {
     try {
-        const filters = req.query;
-        console.log(filters);
-        const response = await filterDoctors(filters);
-
-        if (response.success) {
-            return res.status(200).json(response);
-
-        } else {
-            return res.status(500).json({ error: response.error });
-        }
-    } catch (err) {
-        console.error("Error in doctor filter API:", err);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-});
-
-
-// ********************************************  get a doctor by id ***********************************//
-router.get('/profile/:id', async (req, res) => {
-    try {
-        let { id } = req.params;
-
-        if (isNaN(id) || id <= 0) {
-            throw new Error("Invalid Doctor ID");
-        }
-        const response = await getOneDoctor(id);
+        console.log('appointment get controller')
+        const response = await getAppointments();
 
         if (response.success) {
             return res.status(200).json({ data: response.data });
@@ -106,5 +83,26 @@ router.get('/profile/:id', async (req, res) => {
         return res.status(400).send({ message: error.message || '' })
     }
 })
+
+// ******************************************** update an appointmemnt ***********************************//
+router.put('/update', async (req, res) => {
+    try {
+        const { id , status } = req.body; 
+        if (!id) {
+            throw new Error("ID is required for updating");
+        }
+        const response = await updateAppointments({id, status}); 
+        if (response.success) {
+            return res.status(200).send({ message: response.message });
+        } else {
+            throw new Error(response.error);
+        }
+    } catch (error) {
+        console.log('Error in PUT API:', error);
+        return res.status(400).send({ message: error.message || "An error occurred" });
+    }
+});
+
+
 
 export default router;

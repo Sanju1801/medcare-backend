@@ -46,7 +46,7 @@ router.post("/login", (req, res, next) => {
       }
 
       // Generate JWT Token after successful login
-      const payload = { id: user.id, email: user.email };
+      const payload = { id: user.id, name: user.name, role: user.role };
       const token = jwt.sign(payload, config.jwtSecret, { expiresIn: "1h" });
       
       console.log("Token generated successfully");

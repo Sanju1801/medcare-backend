@@ -2,35 +2,29 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import pool from "../db/index.js";
 import config from "../config/index.js";
-
+import { isValidEmail } from "../helper/index.js";
 
 const saveUser = async (body) => {
     try {
-        console.log(body);
         const { name, email, password } = body
         if (!name || !email || !password) {
-            throw new Error("missing required fields")
+            throw new Error("missing payload values")
         }
 
-        if (!email.endsWith('@gmail.com') && !email.endsWith('@tothenew.com')) {
-            throw new Error("this email is not allowed");
-        }
+        if (!isValidEmail(email)) {
+            throw new Error('Invalid email, Please change the email and try again')
+        } 
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        // const role = 'users';
-    
-        const result = await pool.query('INSERT INTO users (name, email, password) values ($1,$2,$3) RETURNING *', [name, email, hashedPassword]);
-        console.log('save query response', result);
+ 
+        const result = await pool.query('INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *',[name, email, hashedPassword]);
 
-        if (result.rows) {
+        if (result.rows.length) {
             const user = result.rows[0];
-            console.log(user);
-
             const token = jwt.sign(
-                // { name: user.name, email: user.email, role: user.role },
-                {name: user.name},
+                { id: user?.id, role: user?.role },
                 config.jwtSecret,
-                { expiresIn: "1h" }
+                { expiresIn: config.expiresIn }
             );
 
             return {
@@ -48,11 +42,7 @@ const saveUser = async (body) => {
         else throw new Error('error while saving')
     } 
     catch (err) {
-        console.log('error is INSERT query', err);
-        return {
-            success: false,
-            error: err,
-        }
+        throw new Error(err);
     }
 }
 export default saveUser;

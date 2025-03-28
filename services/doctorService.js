@@ -4,12 +4,9 @@ import pool from "../db/index.js";
 // ******************************************** get all doctors ***********************************//
 export const getAllDoctors = async () => {
     try {
-        console.log('doctors get api')
-
         const query = `SELECT * FROM doctors ORDER BY rating DESC`;
         const res = await pool.query(query);
 
-        console.log('response is ', res);
         if (res) {
             return {
                 success: true,
@@ -32,7 +29,6 @@ export const getAllDoctors = async () => {
 export const addDoctor = async (body) => {
     try {
         const { name, title, YOE, picture_url, speciality, address, NOR, rating, gender } = body;
-        console.log(name);
 
         if (!name || !title || !YOE || !picture_url || !speciality || !address || !NOR || !rating || !gender) {
             throw new Error("missing required fields")

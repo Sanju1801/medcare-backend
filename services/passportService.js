@@ -18,7 +18,7 @@ passport.use(new GoogleStratergy({
     },
     function (req, accesstoken, refreshtoken, profile, done) {
         return done(null, profile)
-        //this proifle is sending to my controller api callback
+        //this proifle is sent to my controller api callback
     }
 ))
 
@@ -32,8 +32,6 @@ passport.use(
     { usernameField: "email" },
     async (email, password, done) => {
       try {
-        console.log("Local Strategy Hit for email:", email);
-
         const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
 
         if (result.rows.length === 0) {
@@ -50,7 +48,6 @@ passport.use(
           return done(null, false, { message: "Invalid username or password" });
         }
 
-        // Successful login
         return done(null, user);
 
       } catch (error) {

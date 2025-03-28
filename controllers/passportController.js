@@ -41,17 +41,13 @@ router.post("/login", (req, res, next) => {
         return next(err);
       }
       if (!user) {
-        console.log("Invalid credentials");
         return res.status(401).json({ message: "Invalid username or password" });
       }
 
-      // Generate JWT Token after successful login
       const payload = { id: user.id, name: user.name, role: user.role };
-      const token = jwt.sign(payload, config.jwtSecret, { expiresIn: "1h" });
+      const token = jwt.sign(payload, config.jwtSecret, { expiresIn: config.expiresIn });
       
-      console.log("Token generated successfully");
-
-      // Send token to the client
+      
       return res.status(200).json({
         message: "Login Successful",
         token: token,
@@ -62,7 +58,6 @@ router.post("/login", (req, res, next) => {
         },
       });
     } catch (error) {
-      console.error("Error during login:", error);
       return res.status(500).send("Server Error");
     }
   })(req, res, next);

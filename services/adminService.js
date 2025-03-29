@@ -1,4 +1,5 @@
 import pool from "../db/index.js";
+import { sendEmail } from './emailService.js';
 
 
 // ******************************************** get all doctors ***********************************//
@@ -89,39 +90,51 @@ export const deleteDoctor = async (id) => {
 export const getAppointments = async () => {
     try {
         console.log('appointment get api')
-        
+
         const query = `SELECT * FROM appointments WHERE status=''`;
-        const res = await pool.query(query);        
-        
+        const res = await pool.query(query);
+
         console.log('response is ', res);
-        if(res.rows) {
+        if (res.rows) {
             return {
                 success: true,
                 data: res.rows,
             }
         }
         else throw new Error('error in SELECT query')
-    } 
+    }
     catch (err) {
         console.log('error is select query', err);
         return {
             success: false,
             error: err.message || "Database error",
-        };        
+        };
     }
 }
 
 // ******************************************** update an appointmemnt ***********************************//
-export const updateAppointments = async ({id, status}) => {
+export const updateAppointments = async ({ id, status }) => {
     try {
         if (!id) {
             throw new Error("Missing required fields: id");
         }
-        if(!status){
-            status='';
+        if (!status) {
+            status = '';
         }
+        const appointment = await pool.query(
+            `SELECT email, slot FROM appointments 
+            INNER JOIN users ON appointments.user_id = users.id 
+            WHERE appointments.id = $1`,
+            [id]
+        );
+        if (appointment.rowCount === 0) {
+            throw new Error("Appointment not found");
+        }
+        const userEmail = appointment.rows[0].email;
+        const slot = appointment.rows[0].slot;
+
         const result = await pool.query(
-            `UPDATE appointments SET status = $1 WHERE id = $2`, 
+            `UPDATE appointments SET status = $1 WHERE id = $2`,
             [status, id]
         );
 
@@ -129,8 +142,18 @@ export const updateAppointments = async ({id, status}) => {
             throw new Error("Appointment not found or no change in status");
         }
 
-        return { success: true, message: "Appointment updated successfully" };
-    } catch (err) {
+        const emailSubject = `Your Appointment Status Update`;
+        let emailBody;
+        if (status === 'approved') {
+            emailBody = `Hello,\n\nYour appointment for slot (${slot}) is booked.\n\nThank you.`;
+        } else if (status === 'declined') {
+            emailBody = `Hello,\n\nYour appointment for slot (${slot}) is not booked.\n\nThank you.`;
+        }
+
+        await sendEmail(userEmail, emailSubject, emailBody);
+        return { success: true, message: "Appointment updated and email sent successfully" };
+    }
+    catch (err) {
         console.log('Error in update query:', err);
         return { success: false, error: err.message };
     }
@@ -140,24 +163,24 @@ export const updateAppointments = async ({id, status}) => {
 export const getAllAppointments = async () => {
     try {
         console.log('appointment get api')
-        
+
         const query = `SELECT * FROM appointments`;
-        const res = await pool.query(query);        
-        
+        const res = await pool.query(query);
+
         console.log('response is ', res);
-        if(res.rowCount > 0) {
+        if (res.rowCount > 0) {
             return {
                 success: true,
                 data: res.rows,
             }
         }
         else throw new Error('error in SELECT query')
-    } 
+    }
     catch (err) {
         console.log('error is select query', err);
         return {
             success: false,
             error: err.message || "Database error",
-        };        
+        };
     }
 }

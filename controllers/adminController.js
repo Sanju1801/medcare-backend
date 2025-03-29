@@ -1,6 +1,5 @@
 import express from 'express'
 import { addDoctor, getAllDoctors, deleteDoctor, getAppointments, updateAppointments, getAllAppointments } from '../services/adminService.js'
-// import jwtAuthMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router()
 
@@ -86,7 +85,7 @@ router.get('/appointments', async (req, res) => {
 // ******************************************** update an appointmemnt ***********************************//
 router.put('/appointments/update', async (req, res) => {
     try {
-        const { id , status } = req.body; 
+        const { id , status } = req.body;
         if (!id) {
             throw new Error("ID is required for updating");
         }

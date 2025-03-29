@@ -1,6 +1,5 @@
 import express from 'express'
-import { addDoctor, getAllDoctors, deleteDoctor, filterDoctors, getOneDoctor } from '../services/doctorService.js'
-// import jwtAuthMiddleware from '../middleware/authMiddleware.js';
+import { getAllDoctors, filterDoctors, getOneDoctor, addReview } from '../services/doctorService.js'
 
 const router = express.Router()
 
@@ -26,8 +25,6 @@ router.get('/', async (req, res) => {
 
 
 // ********************************************  get a list of filtered doctors with pagination ***********************************//
-// router.get("/filter", jwtAuthMiddleware, async (req, res) => {
-
 router.get("/filter", async (req, res) => {
     try {
         const filters = req.query;
@@ -68,5 +65,23 @@ router.get('/profile/:id', async (req, res) => {
         return res.status(400).send({ message: error.message || '' })
     }
 })
+
+
+// ********************************************  add review ***********************************//
+router.post('/review', async (req, res) => {
+    try {
+        const response = await addReview(req.body);
+        if (response.success) {
+            return res.status(200).send({ message: response.message });
+        } else {
+            throw new Error(response.error);
+        }
+    }
+    catch (error) {
+        console.log('Error in API:', error);
+        return res.status(400).send({ message: error.message || "An error occurred" });
+    }
+});
+
 
 export default router;

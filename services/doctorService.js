@@ -145,3 +145,34 @@ export const getOneDoctor = async (id) => {
         };
     }
 }
+
+
+//************************************add review**************************************** */
+export const addReview = async (body) => {
+    try {
+        const { review, rating, doctorId , userId} = body;
+
+        if (!userId || !doctorId || !review || !rating) {
+            throw new Error("missing required fields")
+        }
+
+        const query = `INSERT INTO reviews (user_id, doctor_id, review, rating) VALUES ($1, $2, $3, $4) RETURNING *;`;
+        const values = [userId, doctorId, review, rating];
+        const result = await pool.query(query, values);
+
+        console.log('INSERT query response', result);
+        if (result.rows) {
+            return {
+                success: true,
+                message: "Review added successfully!"
+            }
+        }
+        else throw new Error('error while saving')
+    } catch (err) {
+        console.log('error while adding', err);
+        return {
+            success: false,
+            error: err.message || "Database error",
+        };
+    }
+}

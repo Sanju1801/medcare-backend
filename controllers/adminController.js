@@ -1,5 +1,5 @@
 import express from 'express'
-import { addDoctor, getAllDoctors, deleteDoctor, getAppointments, updateAppointments } from '../services/adminService.js'
+import { addDoctor, getAllDoctors, deleteDoctor, getAppointments, updateAppointments, getAllAppointments } from '../services/adminService.js'
 // import jwtAuthMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router()
@@ -63,7 +63,6 @@ router.delete('/doctors/delete/:id', async (req, res) => {
 
 
 // ******************************************** booking ***********************************//
-
 
 
 // ******************************************** get all appointmemnts with no status ************************************//

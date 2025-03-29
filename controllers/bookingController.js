@@ -1,5 +1,5 @@
 import express from 'express'
-import { bookAppointment, getAppointments, updateAppointments } from '../services/bookingService.js';
+import { bookAppointment } from '../services/bookingService.js';
 
 const router = express.Router()
 

@@ -6,7 +6,7 @@ export const getAllDoctors = async () => {
     try {
         console.log('doctors get api')
 
-        const query = `SELECT * FROM doctors ORDER BY rating DESC`;
+        const query = `SELECT * FROM doctors`;
         const res = await pool.query(query);
 
         console.log('response is ', res);
@@ -47,7 +47,7 @@ export const addDoctor = async (body) => {
         const result = await pool.query(query, values);
 
         console.log('INSERT query response', result);
-        if (result.rowCount > 0) {
+        if (result.rows) {
             return {
                 success: true,
                 message: "doctor added"
@@ -90,11 +90,11 @@ export const getAppointments = async () => {
     try {
         console.log('appointment get api')
         
-        const query = `SELECT * FROM appointments`;
+        const query = `SELECT * FROM appointments WHERE status=''`;
         const res = await pool.query(query);        
         
         console.log('response is ', res);
-        if(res.rowCount > 0) {
+        if(res.rows) {
             return {
                 success: true,
                 data: res.rows,
@@ -120,7 +120,6 @@ export const updateAppointments = async ({id, status}) => {
         if(!status){
             status='';
         }
-
         const result = await pool.query(
             `UPDATE appointments SET status = $1 WHERE id = $2`, 
             [status, id]
@@ -136,3 +135,29 @@ export const updateAppointments = async ({id, status}) => {
         return { success: false, error: err.message };
     }
 };
+
+// ******************************************** get all appointmemnts ***********************************//
+export const getAllAppointments = async () => {
+    try {
+        console.log('appointment get api')
+        
+        const query = `SELECT * FROM appointments`;
+        const res = await pool.query(query);        
+        
+        console.log('response is ', res);
+        if(res.rowCount > 0) {
+            return {
+                success: true,
+                data: res.rows,
+            }
+        }
+        else throw new Error('error in SELECT query')
+    } 
+    catch (err) {
+        console.log('error is select query', err);
+        return {
+            success: false,
+            error: err.message || "Database error",
+        };        
+    }
+}

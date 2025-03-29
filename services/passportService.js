@@ -90,7 +90,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (email, done) => {
   try {
     const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-    done(null, result.rows[0]);
+    done(null, result.rows[0]); //req.user.
   } catch (err) {
     done(err);
   }

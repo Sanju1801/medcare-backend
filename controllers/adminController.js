@@ -5,7 +5,7 @@ import { addDoctor, getAllDoctors, deleteDoctor, getAppointments, updateAppointm
 const router = express.Router()
 
 // ******************************************** add a doctor ***********************************//
-router.post('/add', async (req, res) => {
+router.post('/doctors/add', async (req, res) => {
     try {
         const response = await addDoctor(req.body);
         if (response.success) {
@@ -22,7 +22,7 @@ router.post('/add', async (req, res) => {
 
 
 // ********************************************  get a list of all doctors ***********************************//
-router.get('/', async (req, res) => {
+router.get('/doctors', async (req, res) => {
     try {
         console.log('doctor get controller')
         const response = await getAllDoctors();
@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
 
 
 // ********************************************  delete a doctor ***********************************//
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/doctors/delete/:id', async (req, res) => {
     try {
         let { id } = req.params;
 
@@ -66,8 +66,8 @@ router.delete('/delete/:id', async (req, res) => {
 
 
 
-// ******************************************** get all appointmemnts ***********************************//
-router.get('/', async (req, res) => {
+// ******************************************** get all appointmemnts with no status ************************************//
+router.get('/appointments', async (req, res) => {
     try {
         console.log('appointment get controller')
         const response = await getAppointments();
@@ -85,7 +85,7 @@ router.get('/', async (req, res) => {
 })
 
 // ******************************************** update an appointmemnt ***********************************//
-router.put('/update', async (req, res) => {
+router.put('/appointments/update', async (req, res) => {
     try {
         const { id , status } = req.body; 
         if (!id) {
@@ -103,6 +103,22 @@ router.put('/update', async (req, res) => {
     }
 });
 
+// ******************************************** get all appointmemnts **********************************//
+router.get('/appointments/all', async (req, res) => {
+    try {
+        console.log('appointment get controller')
+        const response = await getAllAppointments();
 
+        if (response.success) {
+            return res.status(200).json({ data: response.data });
+        } else {
+            throw new Error(response.error);
+        }
+    }
+    catch (error) {
+        console.log('error in api ', error);
+        return res.status(400).send({ message: error.message || '' })
+    }
+})
 
 export default router;

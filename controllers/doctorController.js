@@ -5,23 +5,6 @@ import { addDoctor, getAllDoctors, deleteDoctor, filterDoctors, getOneDoctor } f
 const router = express.Router()
 
 
-// ******************************************** add a doctor ***********************************//
-router.post('/add', async (req, res) => {
-    try {
-        const response = await addDoctor(req.body);
-        if (response.success) {
-            return res.status(200).send({ message: response.message });
-        } else {
-            throw new Error(response.error);
-        }
-    }
-    catch (error) {
-        console.log('Error in API:', error);
-        return res.status(400).send({ message: error.message || "An error occurred" });
-    }
-});
-
-
 // ********************************************  get a list of all doctors ***********************************//
 router.get('/', async (req, res) => {
     try {
@@ -40,27 +23,6 @@ router.get('/', async (req, res) => {
     }
 })
 
-
-// ********************************************  delete a doctor ***********************************//
-router.delete('/delete/:id', async (req, res) => {
-    try {
-        let { id } = req.params;
-
-        if (isNaN(id) || id <= 0) {
-            throw new Error("Invalid Doctor ID");
-        }
-
-        const response = await deleteDoctor(id);
-        if (response.success) {
-            return res.status(200).send({ message: response.message });
-        } else {
-            throw new Error(response.error);
-        }
-    } catch (error) {
-        console.log('Error in DELETE API:', error);
-        return res.status(400).send({ message: error.message || "An error occurred" });
-    }
-});
 
 
 // ********************************************  get a list of filtered doctors with pagination ***********************************//

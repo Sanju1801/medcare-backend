@@ -14,7 +14,7 @@ app.use(
   cors({
     origin: "*", 
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type"],
+    allowedHeaders: ["Content-Type","Authorization"],
   })
 );
 
@@ -35,8 +35,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', router);
 
 server.listen(config.serverPort, async () => {
-  console.log('server')
   await seedingAdmin();
+  
   const message = `|| 🚀🚀🚀 Server running on port: ${config.serverPort} ||`;
   const len = message.length;
   console.log("~".repeat(len));

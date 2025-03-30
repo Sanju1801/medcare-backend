@@ -40,3 +40,25 @@ export const bookAppointment = async (body) => {
         }
     }
 };
+
+export const getDetails = async (doctor_id, appointment_date) => {
+    try {
+      const result = await pool.query(
+        `SELECT * FROM appointments WHERE doctor_id = $1 AND DATE(slot) = $2 AND status = $3 `,
+        [doctor_id, appointment_date, "approved"]
+      );
+
+      console.log('result of slot service : ', result);
+  
+      return {
+        success: true,
+        data: result.rows,
+      };
+    } catch (err) {
+      console.error("Database Error:", err);
+      return {
+        success: false,
+        message: "Database error or unable to find details",
+      };
+    }
+  };

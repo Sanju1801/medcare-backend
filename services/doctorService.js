@@ -27,7 +27,7 @@ export const getAllDoctors = async () => {
 
 // ******************************************** get fitered doctors ***********************************//
 
-export const filterDoctors = async ({ rating, experience, gender, searchQuery = "", page = 1 }) => {
+export const filterDoctors = async ({ rating, experience, gender, searchQuery = "", page = 1, perPage=6 }) => {
     try {
         let query = "SELECT * FROM doctor_disease_view WHERE 1=1";
         let countQuery = "SELECT COUNT(*) FROM doctor_disease_view WHERE 1=1";

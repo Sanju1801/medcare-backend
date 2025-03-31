@@ -146,31 +146,41 @@ export const getOneDoctor = async (id) => {
 
 
 //************************************add review**************************************** */
+
+
 export const addReview = async (body) => {
     try {
-        const { review, rating, doctorId , userId} = body;
+        const { review, rating, doctorId, userId } = body;
 
         if (!userId || !doctorId || !review || !rating) {
-            throw new Error("missing required fields")
+            throw new Error("Missing required fields");
         }
 
-        const query = `INSERT INTO reviews (user_id, doctor_id, review, rating) VALUES ($1, $2, $3, $4) RETURNING *;`;
-        const values = [userId, doctorId, review, rating];
-        const result = await pool.query(query, values);
+        const insertQuery = `INSERT INTO reviews (user_id, doctor_id, review, rating) VALUES ($1, $2, $3, $4) RETURNING *;`;
+        const insertValues = [userId, doctorId, review, rating];
+        const result = await pool.query(insertQuery, insertValues);
 
-        console.log('INSERT query response', result);
-        if (result.rows) {
-            return {
-                success: true,
-                message: "Review added successfully!"
-            }
-        }
-        else throw new Error('error while saving')
+        if (!result.rows.length) throw new Error("Error while saving review");
+
+        const doctorResult = await pool.query(`SELECT rating, NOR FROM doctors WHERE id = $1;`, [doctorId]);
+        if (!doctorResult.rows.length) throw new Error("Doctor not found");
+
+        const { rating: oldRating, nor } = doctorResult.rows[0];
+        const newNor = nor + 1;
+        const newRating = parseInt(((oldRating * nor) + rating) / newNor);
+
+        await pool.query(`UPDATE doctors SET rating = $1, NOR = $2 WHERE id = $3;`, [newRating, newNor, doctorId]);
+
+        return {
+            success: true,
+            message: "Review added successfully!",
+        };
+
     } catch (err) {
-        console.log('error while adding', err);
+        console.log("Error while adding review:", err);
         return {
             success: false,
             error: err.message || "Database error",
         };
     }
-}
+};

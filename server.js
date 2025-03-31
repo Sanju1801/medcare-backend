@@ -21,14 +21,14 @@ app.use(
 
 app.use(
     session({
-        secret: "your_secret_key", 
+        secret: config.sessionSecret, 
         resave: false,
         saveUninitialized: false,
         cookie: { secure: false }, 
     })
 );
 
-//*********************************** google sign up  **************************************/
+//****google sign up  **********/
 
 passport.use(new GoogleStrategy({
   clientID: config.googleClientID,

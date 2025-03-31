@@ -17,7 +17,8 @@ const config = {
   expiresIn: process.env.JWTEXPIRES,
   adminName: process.env.ADMIN_NAME,
   adminPass: process.env.ADMIN_PASS,
-  adminEmail: process.env.ADMIN_EMAIL
+  adminEmail: process.env.ADMIN_EMAIL, 
+  sessionSecret: process.env.SESSIONSECRET
 };
 
 export default config;

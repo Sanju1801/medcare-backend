@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import config from '../config/index.js'
 
 export const jwtAuthMiddleware = (req, res, next) => {
-  console.log("jwt auth middleware---------------")
+  console.log("-------------------jwt auth middleware---------------")
   const token = req.headers.authorization?.split(" ")[1]; 
   console.log("token : ",token);
 

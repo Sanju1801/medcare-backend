@@ -89,9 +89,7 @@ export const deleteDoctor = async (id) => {
 // ******************************************** get all appointmemnts ***********************************//
 export const getAppointments = async () => {
     try {
-        console.log('appointment get api')
-
-        const query = `SELECT * FROM appointments WHERE status=''`;
+        const query = `SELECT * FROM appointments_view WHERE status=''`;
         const res = await pool.query(query);
 
         console.log('response is ', res);

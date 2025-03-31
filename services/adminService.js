@@ -122,7 +122,7 @@ export const updateAppointments = async ({ id, status }) => {
             status = '';
         }
         const appointment = await pool.query(
-            `SELECT email, slot FROM appointments 
+            `SELECT email, slot, location_type FROM appointments 
             INNER JOIN users ON appointments.user_id = users.id 
             WHERE appointments.id = $1`,
             [id]
@@ -132,6 +132,7 @@ export const updateAppointments = async ({ id, status }) => {
         }
         const userEmail = appointment.rows[0].email;
         const slot = appointment.rows[0].slot;
+        const location_type = appointment.rows[0].location_type;
 
         const result = await pool.query(
             `UPDATE appointments SET status = $1 WHERE id = $2`,
@@ -144,9 +145,11 @@ export const updateAppointments = async ({ id, status }) => {
 
         const emailSubject = `Your Appointment Status Update`;
         let emailBody;
-        if (status === 'approved') {
-            emailBody = `Hello,\n\nYour appointment for slot (${slot}) is booked.\n\nThank you.`;
-        } else if (status === 'declined') {
+        if (location_type === 'online' && status === 'approved') {
+            emailBody = `Hello,\n\nYour appointment for slot (${slot}) is booked.\nBe available for video consult on time.\n\nThank you.`;
+        } else if (location_type === 'offline' && status === 'approved') {
+            emailBody = `Hello,\n\nYour appointment for slot (${slot}) is booked.\nBe present on location on time.\n\nThank you.`;
+        }  else {
             emailBody = `Hello,\n\nYour appointment for slot (${slot}) is not booked.\n\nThank you.`;
         }
 

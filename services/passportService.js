@@ -5,22 +5,7 @@ import config from '../config/index.js';
 import jwt from "jsonwebtoken";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
-import pkg from 'passport-google-oauth20'
-const GoogleStratergy = pkg.Strategy;
 
-
-//*********************************** google sign up  **************************************/
-
-passport.use(new GoogleStratergy({
-    clientID: config.googleClientID,
-    clientSecret: config.googleClientSecret,
-    callbackURL: config.googleCallbackURL,
-    },
-    function (req, accesstoken, refreshtoken, profile, done) {
-        return done(null, profile)
-        //this proifle is sent to my controller api callback
-    }
-))
 
 //************************************ login  *********************************************/
 

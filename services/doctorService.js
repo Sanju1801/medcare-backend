@@ -92,6 +92,7 @@ export const filterDoctors = async ({ rating, experience, gender, searchQuery = 
             query += ` AND (LOWER(doctor_name) LIKE $${queryParams.length}
                        OR LOWER(expertise) LIKE $${queryParams.length} 
                        OR LOWER(disease_name) LIKE $${queryParams.length})`;
+                       
             countQuery += ` AND (LOWER(doctor_name) LIKE $${queryParams.length}
                        OR LOWER(expertise) LIKE $${queryParams.length} 
                        OR LOWER(disease_name) LIKE $${queryParams.length})`;
@@ -101,13 +102,10 @@ export const filterDoctors = async ({ rating, experience, gender, searchQuery = 
         const total = parseInt(totalResult.rows[0].count, 10);
 
         // Pagination logic
-        const perPage = 6;
         const offset = (page - 1) * perPage;
         queryParams.push(perPage);
         queryParams.push(offset);
         query += ` ORDER BY rating DESC LIMIT $${queryParams.length - 1} OFFSET $${queryParams.length}`;
-
-        console.log("Executing Query:", query, queryParams);
         
         const result = await pool.query(query, queryParams);
         return { success: true, doctors: result.rows, total };

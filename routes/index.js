@@ -11,8 +11,6 @@ const router = express.Router();
 
 router.use('/', signupController);
 router.use('/', passportController);
-// router.use('/doctors', doctorController)
-// router.use('/appointment', bookingController);
 
 router.use('/doctors', jwtAuthMiddleware, doctorController)
 router.use('/appointment',jwtAuthMiddleware, bookingController);

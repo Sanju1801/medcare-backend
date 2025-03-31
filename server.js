@@ -6,6 +6,7 @@ import passport from "passport";
 import session from "express-session";
 import cors from 'cors';
 import { seedingAdmin } from './helper/seeding.js';
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
 const app = express();
 const server = http.createServer(app);
@@ -26,6 +27,17 @@ app.use(
         cookie: { secure: false }, 
     })
 );
+
+//*********************************** google sign up  **************************************/
+
+passport.use(new GoogleStrategy({
+  clientID: config.googleClientID,
+  clientSecret: config.googleClientSecret,
+  callbackURL: "http://localhost:3001/google/callback"
+}, (accessToken, refreshToken, profile, done) => {
+  return done(null, profile); 
+}));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
